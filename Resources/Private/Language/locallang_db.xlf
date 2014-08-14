@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2014-05-02T12:00:00Z" product-name="authcode">
+		<header/>
+		<body>
+			<trans-unit id="tx_authcode_domain_model_authcode">
+				<source>Auth code</source>
+			</trans-unit>
+			<trans-unit id="tx_authcode_domain_model_authcode.action">
+				<source>Action</source>
+			</trans-unit>
+			<trans-unit id="tx_authcode_domain_model_authcode.action.I.enableRecord">
+				<source>Enable record</source>
+			</trans-unit>
+			<trans-unit id="tx_authcode_domain_model_authcode.action.I.accessPage">
+				<source>Access page</source>
+			</trans-unit>
+			<trans-unit id="tx_authcode_domain_model_authcode.auth_code">
+				<source>Auth code</source>
+			</trans-unit>
+			<trans-unit id="tx_authcode_domain_model_authcode.identifier">
+				<source>Identifier</source>
+			</trans-unit>
+			<trans-unit id="tx_authcode_domain_model_authcode.identifier_context">
+				<source>Identifier context</source>
+			</trans-unit>
+			<trans-unit id="tx_authcode_domain_model_authcode.reference_table">
+				<source>Reference table</source>
+			</trans-unit>
+			<trans-unit id="tx_authcode_domain_model_authcode.reference_table_hidden_field">
+				<source>Reference table hidden field</source>
+			</trans-unit>
+			<trans-unit id="tx_authcode_domain_model_authcode.reference_table_hidden_field_must_be_true">
+				<source>Reference table hidden field must be true</source>
+			</trans-unit>
+			<trans-unit id="tx_authcode_domain_model_authcode.reference_table_uid">
+				<source>Reference table UID</source>
+			</trans-unit>
+			<trans-unit id="tx_authcode_domain_model_authcode.reference_table_uid_field">
+				<source>Reference table UID field</source>
+			</trans-unit>
+			<trans-unit id="tx_authcode_domain_model_authcode.serialized_auth_data">
+				<source>Serialized auth data</source>
+			</trans-unit>
+			<trans-unit id="tx_authcode_domain_model_authcode.tabs.additional_data">
+				<source>Additional data</source>
+			</trans-unit>
+			<trans-unit id="tx_authcode_domain_model_authcode.type">
+				<source>Contacted</source>
+			</trans-unit>
+			<trans-unit id="tx_authcode_domain_model_authcode.type.I.independent">
+				<source>Independent</source>
+			</trans-unit>
+			<trans-unit id="tx_authcode_domain_model_authcode.type.I.record">
+				<source>Record</source>
+			</trans-unit>
+			<trans-unit id="tx_authcode_domain_model_authcode.valid_until">
+				<source>Valid until</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>
