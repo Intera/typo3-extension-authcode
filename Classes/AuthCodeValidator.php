@@ -87,12 +87,17 @@ class AuthCodeValidator {
 	 * If the auth code is invalid an exception will be thrown or the user will be
 	 * redirected to a configured error page.
 	 *
+	 * @param string $authCode
 	 * @throws Exception\InvalidAuthCodeException
 	 * @return \Tx\Authcode\Domain\Model\AuthCode
 	 */
-	public function validateAuthCodeAndExecuteAction() {
+	public function validateAuthCodeAndExecuteAction($authCode = NULL) {
 
-		$authCode = $this->authCodeRepository->getSubmittedAuthCode();
+		if (!isset($authCode)) {
+			$authCode = $this->authCodeRepository->getSubmittedAuthCode();
+		} else {
+			$authCode = $this->authCodeRepository->findOneByAuthCode($authCode);
+		}
 
 		if (!isset($authCode) && !$this->authCodeIsOptional) {
 			throw new \Tx\Authcode\Exception\InvalidAuthCodeException();
