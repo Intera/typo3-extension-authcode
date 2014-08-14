@@ -145,7 +145,6 @@ class AuthCodeRepository extends Repository {
 
 		$this->initializeAuthCode($authCode, AuthCodeType::INDEPENDENT);
 
-		$this->clearAssociatedAuthCodes($authCode);
 		$this->add($authCode);
 	}
 
@@ -179,7 +178,6 @@ class AuthCodeRepository extends Repository {
 
 		$this->initializeAuthCode($authCode, AuthCodeType::RECORD);
 
-		$this->clearAssociatedAuthCodes($authCode);
 		$this->add($authCode);
 	}
 
