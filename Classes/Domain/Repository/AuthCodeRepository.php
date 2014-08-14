@@ -131,14 +131,12 @@ class AuthCodeRepository extends Repository {
 	 *
 	 * The identifier should be unique in the given context.
 	 *
+	 * @param \Tx\Authcode\Domain\Model\AuthCode $authCode
 	 * @param string $identifier
 	 * @param string $context
-	 * @return string
 	 */
-	public function generateIndependentAuthCode($identifier, $context) {
+	public function generateIndependentAuthCode($authCode, $identifier, $context) {
 
-		/** @var \Tx\Authcode\Domain\Model\AuthCode $authCode */
-		$authCode = $this->objectManager->get('Tx\\Authcode\\Domain\\Model\\AuthCode');
 		$authCode->setIdentifier($identifier);
 		$authCode->setIdentifierContext($context);
 
@@ -149,8 +147,6 @@ class AuthCodeRepository extends Repository {
 
 		$this->clearAssociatedAuthCodes($authCode);
 		$this->add($authCode);
-
-		return $authCode;
 	}
 
 	/**
@@ -162,7 +158,6 @@ class AuthCodeRepository extends Repository {
 	 * @param string $table
 	 * @param int $uid
 	 * @throws \InvalidArgumentException
-	 * @return \Tx\Authcode\Domain\Model\AuthCode
 	 */
 	public function generateRecordAuthCode($authCode, $action, $table, $uid) {
 
@@ -178,8 +173,6 @@ class AuthCodeRepository extends Repository {
 			}
 		}
 
-		/** @var \Tx\Authcode\Domain\Model\AuthCode $authCode */
-		$authCode = $this->objectManager->get('Tx\\Authcode\\Domain\\Model\\AuthCode');
 		$authCode->setReferenceTable($table);
 		$authCode->setReferenceTableUid($uid);
 		$authCode->setAction($action);
@@ -188,8 +181,6 @@ class AuthCodeRepository extends Repository {
 
 		$this->clearAssociatedAuthCodes($authCode);
 		$this->add($authCode);
-
-		return $authCode;
 	}
 
 	/**
