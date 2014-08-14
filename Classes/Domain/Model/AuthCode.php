@@ -142,10 +142,10 @@ class AuthCode extends AbstractEntity {
 	}
 
 	/**
-	 * @return \Tx\Authcode\Domain\Enumeration\AuthCodeType
+	 * @return string
 	 */
 	public function getType() {
-		return $this->type;
+		return (string)$this->type;
 	}
 
 	/**
