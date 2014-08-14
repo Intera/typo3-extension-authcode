@@ -274,6 +274,7 @@ class AuthCodeRepository extends Repository {
 	 */
 	protected function findByReferencedRecord($table, $uid, $hiddenField, $uidField) {
 		$query = $this->createQuery();
+		$query->getQuerySettings()->setIgnoreEnableFields(TRUE);
 		$query->matching(
 			$query->logicalAnd(
 				$query->equals('type', AuthCodeType::RECORD),
@@ -295,6 +296,7 @@ class AuthCodeRepository extends Repository {
 	 */
 	protected function findIndependendByIdentifierAndContext($identifier, $context) {
 		$query = $this->createQuery();
+		$query->getQuerySettings()->setIgnoreEnableFields(TRUE);
 		$query->matching(
 			$query->logicalAnd(
 				$query->equals('type', AuthCodeType::INDEPENDENT),
