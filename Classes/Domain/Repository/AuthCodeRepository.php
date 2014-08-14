@@ -56,8 +56,8 @@ class AuthCodeRepository extends Repository {
 			$this->clearRecordAuthCodes(
 				$authCode->getReferenceTable(),
 				$authCode->getReferenceTableUid(),
-				$authCode->getReferenceTableUidField(),
-				$authCode->getReferenceTableHiddenField()
+				$authCode->getReferenceTableHiddenField(),
+				$authCode->getReferenceTableUidField()
 			);
 
 		} else {
