@@ -67,6 +67,8 @@ class AuthCodeRepository extends Repository {
 				$authCode->getIdentifierContext()
 			);
 		}
+
+		$this->persistenceManager->persistAll();
 	}
 
 	/**
