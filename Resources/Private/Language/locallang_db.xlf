@@ -9,11 +9,14 @@
 			<trans-unit id="tx_authcode_domain_model_authcode.action">
 				<source>Action</source>
 			</trans-unit>
-			<trans-unit id="tx_authcode_domain_model_authcode.action.I.enableRecord">
-				<source>Enable record</source>
-			</trans-unit>
 			<trans-unit id="tx_authcode_domain_model_authcode.action.I.accessPage">
 				<source>Access page</source>
+			</trans-unit>
+			<trans-unit id="tx_authcode_domain_model_authcode.action.I.deleteRecord">
+				<source>Delete record</source>
+			</trans-unit>
+			<trans-unit id="tx_authcode_domain_model_authcode.action.I.enableRecord">
+				<source>Enable record</source>
 			</trans-unit>
 			<trans-unit id="tx_authcode_domain_model_authcode.auth_code">
 				<source>Auth code</source>

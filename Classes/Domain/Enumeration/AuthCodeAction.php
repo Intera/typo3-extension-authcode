@@ -20,5 +20,7 @@ class AuthCodeAction extends Enumeration {
 
 	const ACCESS_PAGE = 'accessPage';
 
-	const ENABLE_RECORD = 'enableRecord';
+	const RECORD_ENABLE = 'enableRecord';
+
+	const RECORD_DELETE = 'deleteRecord';
 }

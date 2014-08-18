@@ -42,6 +42,11 @@ class AuthCodeValidator {
 	/**
 	 * @var bool
 	 */
+	protected $forceRecordDeletion = FALSE;
+
+	/**
+	 * @var bool
+	 */
 	protected $invalidateAuthCodeAfterAccess = TRUE;
 
 	/**
@@ -64,6 +69,13 @@ class AuthCodeValidator {
 	 */
 	public function setAuthCodeIsOptional($authCodeIsOptional) {
 		$this->authCodeIsOptional = $authCodeIsOptional;
+	}
+
+	/**
+	 * @param boolean $forceRecordDeletion
+	 */
+	public function setForceRecordDeletion($forceRecordDeletion) {
+		$this->forceRecordDeletion = $forceRecordDeletion;
 	}
 
 	/**
@@ -115,8 +127,13 @@ class AuthCodeValidator {
 				switch ($authCode->getAction()) {
 
 					// If action is enable record we unhide / enable the associated record.
-					case AuthCodeAction::ENABLE_RECORD:
+					case AuthCodeAction::RECORD_ENABLE:
 						$this->authCodeRecordRepository->enableAssociatedRecord($authCode, $this->updateTimestampOnActivation);
+						break;
+
+					// If action is delete record we delete the record.
+					case AuthCodeAction::RECORD_DELETE:
+						$this->authCodeRecordRepository->removeAssociatedRecord($authCode, $this->forceRecordDeletion);
 						break;
 
 					// For page access we do nothing

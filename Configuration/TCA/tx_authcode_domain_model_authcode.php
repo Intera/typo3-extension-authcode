@@ -27,8 +27,12 @@ return array(
 				'type' => 'select',
 				'items' => array(
 					array(
-						$languagePrefixColumn . 'action.I.' . \Tx\Authcode\Domain\Enumeration\AuthCodeAction::ENABLE_RECORD,
-						\Tx\Authcode\Domain\Enumeration\AuthCodeAction::ENABLE_RECORD
+						$languagePrefixColumn . 'action.I.' . \Tx\Authcode\Domain\Enumeration\AuthCodeAction::RECORD_ENABLE,
+						\Tx\Authcode\Domain\Enumeration\AuthCodeAction::RECORD_ENABLE
+					),
+					array(
+						$languagePrefixColumn . 'action.I.' . \Tx\Authcode\Domain\Enumeration\AuthCodeAction::RECORD_DELETE,
+						\Tx\Authcode\Domain\Enumeration\AuthCodeAction::RECORD_DELETE
 					),
 					array(
 						$languagePrefixColumn . 'action.I.' . \Tx\Authcode\Domain\Enumeration\AuthCodeAction::ACCESS_PAGE,

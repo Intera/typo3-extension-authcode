@@ -160,15 +160,17 @@ class AuthCodeRepository extends Repository {
 	 */
 	public function generateRecordAuthCode($authCode, $action, $table, $uid) {
 
-		$hiddenField = (string)$authCode->getReferenceTableHiddenField();
-		if ($hiddenField === '') {
-			if (
-				isset($GLOBALS['TCA'][$authCode->getReferenceTable()]['ctrl']['enablecolumns']['disabled'])
-				&& $GLOBALS['TCA'][$authCode->getReferenceTable()]['ctrl']['enablecolumns']['disabled'] !== ''
-			) {
-				$authCode->setReferenceTableHiddenField($GLOBALS['TCA'][$authCode->getReferenceTable()]['ctrl']['enablecolumns']['disabled']);
-			} else {
-				throw new \InvalidArgumentException('Hidden field is not set in auth code record and can not be found in TCA.');
+		if ($action === AuthCodeAction::RECORD_ENABLE) {
+			$hiddenField = (string)$authCode->getReferenceTableHiddenField();
+			if ($hiddenField === '') {
+				if (
+					isset($GLOBALS['TCA'][$authCode->getReferenceTable()]['ctrl']['enablecolumns']['disabled'])
+					&& $GLOBALS['TCA'][$authCode->getReferenceTable()]['ctrl']['enablecolumns']['disabled'] !== ''
+				) {
+					$authCode->setReferenceTableHiddenField($GLOBALS['TCA'][$authCode->getReferenceTable()]['ctrl']['enablecolumns']['disabled']);
+				} else {
+					throw new \InvalidArgumentException('Hidden field is not set in auth code record and can not be found in TCA.');
+				}
 			}
 		}
 

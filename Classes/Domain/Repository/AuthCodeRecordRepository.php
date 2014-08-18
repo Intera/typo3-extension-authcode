@@ -91,24 +91,27 @@ class AuthCodeRecordRepository implements SingletonInterface {
 	}
 
 	/**
-	 * Deletes the records that is referenced by the auth code from
-	 * the database
+	 * Deletes the records that is referenced by the auth code from the database.
 	 *
-	 * @param array $authCodeData
-	 * @param bool $markAsDeleted
+	 * @param \Tx\Authcode\Domain\Model\AuthCode $authCode
+	 * @param bool $forceDeletion If this is TRUE the record will be deleted from the database even if the has a "delete" field configured in the TCA.
 	 */
-	public function removeAuthCodeRecordFromDB($authCodeData, $markAsDeleted = FALSE) {
+	public function removeAssociatedRecord($authCode, $forceDeletion = FALSE) {
 
-		$table = $authCodeData['reference_table'];
-		$uidField = $authCodeData['reference_table_uid_field'];
-		$uid = $this->typo3Db->fullQuoteStr($authCodeData['reference_table_uid'], $table);
+		$table = $authCode->getReferenceTable();
+		$uidField = $authCode->getReferenceTableUidField();
+		$uid = $authCode->getReferenceTableUid();
 
-		if ($markAsDeleted && array_key_exists('delete', $GLOBALS['TCA'][$table]['ctrl'])) {
+		if (
+			!$forceDeletion
+			&& isset($GLOBALS['TCA'][$table]['ctrl']['delete'])
+			&& trim($GLOBALS['TCA'][$table]['ctrl']['delete']) !== ''
+		) {
 			$deleteColumn = $GLOBALS['TCA'][$table]['ctrl']['delete'];
 			$fieldValues[$deleteColumn] = 1;
-			$this->typo3Db->exec_UPDATEquery($table, $uidField . '=' . $uid, $fieldValues);
+			$this->typo3Db->exec_UPDATEquery($table, $uidField . '=' . (int)$uid, $fieldValues);
 		} else {
-			$this->typo3Db->exec_DELETEquery($table, $uidField . '=' . $uid);
+			$this->typo3Db->exec_DELETEquery($table, $uidField . '=' . (int)$uid);
 		}
 	}
 }
