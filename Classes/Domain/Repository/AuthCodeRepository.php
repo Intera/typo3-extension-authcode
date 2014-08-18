@@ -56,7 +56,6 @@ class AuthCodeRepository extends Repository {
 			$this->clearRecordAuthCodes(
 				$authCode->getReferenceTable(),
 				$authCode->getReferenceTableUid(),
-				$authCode->getReferenceTableHiddenField(),
 				$authCode->getReferenceTableUidField()
 			);
 
@@ -253,11 +252,10 @@ class AuthCodeRepository extends Repository {
 	 *
 	 * @param $table string
 	 * @param $uid string
-	 * @param string $hiddenField
 	 * @param $uidField string
 	 */
-	protected function clearRecordAuthCodes($table, $uid, $hiddenField, $uidField) {
-		$authCodes = $this->findByReferencedRecord($table, $uid, $hiddenField, $uidField);
+	protected function clearRecordAuthCodes($table, $uid, $uidField) {
+		$authCodes = $this->findByReferencedRecord($table, $uid, $uidField);
 		foreach ($authCodes as $authCode) {
 			$this->remove($authCode);
 		}
@@ -268,11 +266,10 @@ class AuthCodeRepository extends Repository {
 	 *
 	 * @param string $table
 	 * @param int $uid
-	 * @param string $hiddenField
 	 * @param string $uidField
 	 * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
 	 */
-	protected function findByReferencedRecord($table, $uid, $hiddenField, $uidField) {
+	protected function findByReferencedRecord($table, $uid, $uidField) {
 		$query = $this->createQuery();
 		$query->getQuerySettings()->setIgnoreEnableFields(TRUE);
 		$query->matching(
@@ -280,8 +277,7 @@ class AuthCodeRepository extends Repository {
 				$query->equals('type', AuthCodeType::RECORD),
 				$query->equals('referenceTable', $table),
 				$query->equals('referenceTableUidField', $uidField),
-				$query->equals('referenceTableUid', (int)$uid),
-				$query->equals('referenceTableHiddenField', $hiddenField)
+				$query->equals('referenceTableUid', (int)$uid)
 			)
 		);
 		return $query->execute();
