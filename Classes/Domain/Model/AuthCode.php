@@ -86,6 +86,23 @@ class AuthCode extends AbstractEntity {
 	}
 
 	/**
+	 * @return array
+	 */
+	public function getAdditionalData() {
+		$additionalData = trim($this->serializedAuthData);
+		if ($additionalData !== '') {
+			$additionalData = unserialize($additionalData);
+			if (!is_array($additionalData)) {
+				throw new \RuntimeException('The additional data stored in the auth code can not be unserialized to an array.');
+			}
+		} else {
+			$additionalData = array();
+		}
+
+		return $additionalData;
+	}
+
+	/**
 	 * @return string
 	 */
 	public function getAuthCode() {
@@ -156,6 +173,13 @@ class AuthCode extends AbstractEntity {
 	}
 
 	/**
+	 * @param array $additionalData
+	 */
+	public function setAdditionalData(array $additionalData) {
+		$this->serializedAuthData = serialize($additionalData);
+	}
+
+	/**
 	 * @param string $authCode
 	 */
 	public function setAuthCode($authCode) {
@@ -209,13 +233,6 @@ class AuthCode extends AbstractEntity {
 	 */
 	public function setReferenceTableUidField($referenceTableUidField) {
 		$this->referenceTableUidField = $referenceTableUidField;
-	}
-
-	/**
-	 * @param string $serializedAuthData
-	 */
-	public function setSerializedAuthData($serializedAuthData) {
-		$this->serializedAuthData = $serializedAuthData;
 	}
 
 	/**
