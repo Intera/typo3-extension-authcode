@@ -1,0 +1,11 @@
+{
+	"name": "intera/typo3-extension-authcode",
+	"description": "Library for generating and validating one time authorization codes (e.g. for email validation).",
+	"type": "typo3-cms-extension",
+	"version": "0.1.0",
+	"autoload": {
+		"psr-4": {
+			"Tx\\Authcode\\": "Classes/"
+		}
+	}
+}
