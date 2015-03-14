@@ -11,10 +11,10 @@ namespace Tx\Authcode\Domain\Repository;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
-use TYPO3\CMS\Extbase\Persistence\Repository;
-use Tx\Authcode\Domain\Enumeration\AuthCodeType;
 use Tx\Authcode\Domain\Enumeration\AuthCodeAction;
+use Tx\Authcode\Domain\Enumeration\AuthCodeType;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Persistence\Repository;
 
 /**
  * A class providing helper functions for auth codes stored in the database
@@ -143,8 +143,10 @@ class AuthCodeRepository extends Repository {
 		$authCode->setAction(AuthCodeAction::ACCESS_PAGE);
 
 		$this->initializeAuthCode($authCode, AuthCodeType::INDEPENDENT);
+		$this->clearAssociatedAuthCodes($authCode);
 
 		$this->add($authCode);
+		$this->persistenceManager->persistAll();
 	}
 
 	/**
@@ -178,8 +180,10 @@ class AuthCodeRepository extends Repository {
 		$authCode->setAction($action);
 
 		$this->initializeAuthCode($authCode, AuthCodeType::RECORD);
+		$this->clearAssociatedAuthCodes($authCode);
 
 		$this->add($authCode);
+		$this->persistenceManager->persistAll();
 	}
 
 	/**
@@ -222,6 +226,17 @@ class AuthCodeRepository extends Repository {
 	}
 
 	/**
+	 * Updates the timestamp of the auth code so that the expiration time is moved in the future.
+	 *
+	 * @param \Tx\Authcode\Domain\Model\AuthCode $authCode
+	 */
+	public function refreshAuthCode($authCode) {
+		$authCode->setValidUntil($this->getValidUntil());
+		$this->update($authCode);
+		$this->persistenceManager->persistAll();
+	}
+
+	/**
 	 * Sets a new auth code expiry time, if you want to use it you have
 	 * to call it before running getAuthCodeDataFromDBI() or
 	 * deleteExpiredAuthCodesFromDatabase()
@@ -232,6 +247,16 @@ class AuthCodeRepository extends Repository {
 	public function setAuthCodeExpiryTime($authCodeExpiryTime) {
 		$this->authCodeExpiryTime = $authCodeExpiryTime;
 		$this->validateAuthCodeExpiryTime();
+	}
+
+	/**
+	 * If this is set to TRUE (default) expired auth codes will automatically be deleted
+	 * every time an auth code is read from the database.
+	 *
+	 * @param bool $autoDeleteExpiredAuthCodes
+	 */
+	public function setAutoDeleteExpiredAuthCodes($autoDeleteExpiredAuthCodes) {
+		$this->autoDeleteExpiredAuthCodes = (bool)$autoDeleteExpiredAuthCodes;
 	}
 
 	/**

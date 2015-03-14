@@ -16,12 +16,31 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 /**
  * An authcode record.
  */
-class AuthCode extends AbstractEntity {
+class AuthCode extends AbstractEntity implements \ArrayAccess {
 
 	/**
 	 * @var \Tx\Authcode\Domain\Enumeration\AuthCodeAction
 	 */
 	protected $action;
+
+	/**
+	 * @var array
+	 */
+	protected $arrayKeyMethodMapping = array(
+		'uid' => 'Uid',
+		'pid' => 'Pid',
+		'tstamp' => 'LegacyTstamp',
+		'reference_table' => 'ReferenceTable',
+		'reference_table_uid_field' => 'ReferenceTableUidField',
+		'reference_table_uid' => 'ReferenceTableUid',
+		'auth_code' => 'AuthCode',
+		'reference_table_hidden_field' => 'ReferenceTableHiddenField',
+		'serialized_auth_data' => 'AdditionalData',
+		'action' => 'Action',
+		'identifier' => 'Identifier',
+		'identifier_context' => 'IdentifierContext',
+		'type' => 'Type',
+	);
 
 	/**
 	 * @var string
@@ -67,6 +86,11 @@ class AuthCode extends AbstractEntity {
 	 * @var string
 	 */
 	protected $serializedAuthData;
+
+	/**
+	 * @var int
+	 */
+	protected $tstamp;
 
 	/**
 	 * @var \Tx\Authcode\Domain\Enumeration\AuthCodeType
@@ -166,6 +190,55 @@ class AuthCode extends AbstractEntity {
 	}
 
 	/**
+	 * @param string $offset
+	 * @return bool
+	 * @deprecated Using ArrayAccess for auth code records is deprecated since 0.2.0 and will be removed in 0.4.0. Use the matching getter / setters instead.
+	 */
+	public function offsetExists($offset) {
+		return array_key_exists($this->arrayKeyMethodMapping, $offset);
+	}
+
+	/**
+	 * @param string $offset
+	 * @return mixed
+	 * @deprecated Using ArrayAccess for auth code records is deprecated since 0.2.0 and will be removed in 0.4.0. Use the matching getter / setters instead.
+	 */
+	public function offsetGet($offset) {
+		if (!array_key_exists($this->arrayKeyMethodMapping, $offset)) {
+			return NULL;
+		}
+		$getter = 'get' . $this->arrayKeyMethodMapping[$offset];
+		return $this->$getter();
+	}
+
+	/**
+	 * @param string $offset
+	 * @param string $value
+	 * @return void
+	 * @deprecated Using ArrayAccess for auth code records is deprecated since 0.2.0 and will be removed in 0.4.0. Use the matching getter / setters instead.
+	 */
+	public function offsetSet($offset, $value) {
+		if (!array_key_exists($this->arrayKeyMethodMapping, $offset)) {
+			return;
+		}
+		$setter = 'set' . $this->arrayKeyMethodMapping;
+		$this->$setter($value);
+	}
+
+	/**
+	 * @param string $offset
+	 * @return void
+	 * @deprecated Using ArrayAccess for auth code records is deprecated since 0.2.0 and will be removed in 0.4.0. Use the matching getter / setters instead.
+	 */
+	public function offsetUnset($offset) {
+		if (!array_key_exists($this->arrayKeyMethodMapping, $offset)) {
+			return;
+		}
+		$setter = 'set' . $this->arrayKeyMethodMapping;
+		$this->$setter(NULL);
+	}
+
+	/**
 	 * @param string $action
 	 */
 	public function setAction($action) {
@@ -247,5 +320,14 @@ class AuthCode extends AbstractEntity {
 	 */
 	public function setValidUntil($validUntil) {
 		$this->validUntil = $validUntil;
+	}
+
+	/**
+	 * The timestamp when this authcode was created.
+	 *
+	 * @deprecated This was used to calculate the expire date in the past and is replaced by the validUntil property.
+	 */
+	protected function getLegacyTstamp() {
+		return $this->tstamp;
 	}
 }

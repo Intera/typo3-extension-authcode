@@ -105,6 +105,12 @@ return array(
 			)
 		),
 
+		'tstamp' => array(
+			'config' => array(
+				'type' => 'passthrough',
+			)
+		),
+
 		'type' => array(
 			'label' => $languagePrefixColumn . 'type',
 			'config' => array(

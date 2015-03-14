@@ -68,7 +68,7 @@ class AuthCodeValidator {
 	 * @param boolean $authCodeIsOptional
 	 */
 	public function setAuthCodeIsOptional($authCodeIsOptional) {
-		$this->authCodeIsOptional = $authCodeIsOptional;
+		$this->authCodeIsOptional = (bool)$authCodeIsOptional;
 	}
 
 	/**
@@ -79,10 +79,10 @@ class AuthCodeValidator {
 	}
 
 	/**
-	 * @param boolean $invalidateAuthCodeAfterAccess
+	 * @param bool $invalidateAuthCodeAfterAccess
 	 */
 	public function setInvalidateAuthCodeAfterAccess($invalidateAuthCodeAfterAccess) {
-		$this->invalidateAuthCodeAfterAccess = $invalidateAuthCodeAfterAccess;
+		$this->invalidateAuthCodeAfterAccess = (bool)$invalidateAuthCodeAfterAccess;
 	}
 
 	/**
@@ -99,7 +99,8 @@ class AuthCodeValidator {
 	 * If the auth code is invalid an exception will be thrown or the user will be
 	 * redirected to a configured error page.
 	 *
-	 * @param string $authCode
+	 * @param \Tx\Authcode\Domain\Model\AuthCode|string|NULL $authCode The submitted auth code GET parameter, an auth code instance
+	 * from the repository or NULL. If NULL, the auth code will be read from GET or the session.
 	 * @throws Exception\InvalidAuthCodeException
 	 * @return \Tx\Authcode\Domain\Model\AuthCode
 	 */
@@ -107,7 +108,7 @@ class AuthCodeValidator {
 
 		if (!isset($authCode)) {
 			$authCode = $this->authCodeRepository->getSubmittedAuthCode();
-		} else {
+		} elseif (is_string($authCode)) {
 			$authCode = $this->authCodeRepository->findOneByAuthCode($authCode);
 		}
 
