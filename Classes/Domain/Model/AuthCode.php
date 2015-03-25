@@ -195,7 +195,7 @@ class AuthCode extends AbstractEntity implements \ArrayAccess {
 	 * @deprecated Using ArrayAccess for auth code records is deprecated since 0.2.0 and will be removed in 0.4.0. Use the matching getter / setters instead.
 	 */
 	public function offsetExists($offset) {
-		return array_key_exists($this->arrayKeyMethodMapping, $offset);
+		return array_key_exists($offset, $this->arrayKeyMethodMapping);
 	}
 
 	/**
@@ -204,7 +204,7 @@ class AuthCode extends AbstractEntity implements \ArrayAccess {
 	 * @deprecated Using ArrayAccess for auth code records is deprecated since 0.2.0 and will be removed in 0.4.0. Use the matching getter / setters instead.
 	 */
 	public function offsetGet($offset) {
-		if (!array_key_exists($this->arrayKeyMethodMapping, $offset)) {
+		if (!array_key_exists($offset, $this->arrayKeyMethodMapping)) {
 			return NULL;
 		}
 		$getter = 'get' . $this->arrayKeyMethodMapping[$offset];
@@ -218,7 +218,7 @@ class AuthCode extends AbstractEntity implements \ArrayAccess {
 	 * @deprecated Using ArrayAccess for auth code records is deprecated since 0.2.0 and will be removed in 0.4.0. Use the matching getter / setters instead.
 	 */
 	public function offsetSet($offset, $value) {
-		if (!array_key_exists($this->arrayKeyMethodMapping, $offset)) {
+		if (!array_key_exists($offset, $this->arrayKeyMethodMapping)) {
 			return;
 		}
 		$setter = 'set' . $this->arrayKeyMethodMapping;
@@ -231,7 +231,7 @@ class AuthCode extends AbstractEntity implements \ArrayAccess {
 	 * @deprecated Using ArrayAccess for auth code records is deprecated since 0.2.0 and will be removed in 0.4.0. Use the matching getter / setters instead.
 	 */
 	public function offsetUnset($offset) {
-		if (!array_key_exists($this->arrayKeyMethodMapping, $offset)) {
+		if (!array_key_exists($offset, $this->arrayKeyMethodMapping)) {
 			return;
 		}
 		$setter = 'set' . $this->arrayKeyMethodMapping;
