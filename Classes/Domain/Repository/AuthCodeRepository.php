@@ -36,6 +36,14 @@ class AuthCodeRepository extends Repository {
 	protected $authCodeSessionRepository;
 
 	/**
+	 * If this is true all auth codes belonging to the same record will be cleared
+	 * before a new auth code for this record is generated.
+	 *
+	 * @var bool
+	 */
+	protected $autoClearAssociatedCodes = TRUE;
+
+	/**
 	 * If this is true every time an auth code is read from the
 	 * database expired auth codes will be deleted from the database
 	 *
@@ -143,7 +151,10 @@ class AuthCodeRepository extends Repository {
 		$authCode->setAction(AuthCodeAction::ACCESS_PAGE);
 
 		$this->initializeAuthCode($authCode, AuthCodeType::INDEPENDENT);
-		$this->clearAssociatedAuthCodes($authCode);
+
+		if ($this->autoClearAssociatedCodes) {
+			$this->clearAssociatedAuthCodes($authCode);
+		}
 
 		$this->add($authCode);
 		$this->persistenceManager->persistAll();
@@ -180,7 +191,10 @@ class AuthCodeRepository extends Repository {
 		$authCode->setAction($action);
 
 		$this->initializeAuthCode($authCode, AuthCodeType::RECORD);
-		$this->clearAssociatedAuthCodes($authCode);
+
+		if ($this->autoClearAssociatedCodes) {
+			$this->clearAssociatedAuthCodes($authCode);
+		}
 
 		$this->add($authCode);
 		$this->persistenceManager->persistAll();
@@ -247,6 +261,13 @@ class AuthCodeRepository extends Repository {
 	public function setAuthCodeExpiryTime($authCodeExpiryTime) {
 		$this->authCodeExpiryTime = $authCodeExpiryTime;
 		$this->validateAuthCodeExpiryTime();
+	}
+
+	/**
+	 * @param boolean $autoClearAssociatedCodes
+	 */
+	public function setAutoClearAssociatedCodes($autoClearAssociatedCodes) {
+		$this->autoClearAssociatedCodes = $autoClearAssociatedCodes;
 	}
 
 	/**
