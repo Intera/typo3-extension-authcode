@@ -5,6 +5,9 @@
 	"replace": {
 		"authcode": "self.version"
 	},
+	"provide": {
+		"authcode": "self.version"
+	},
 	"autoload": {
 		"psr-4": {
 			"Tx\\Authcode\\": "Classes/"
