@@ -132,6 +132,32 @@ class AuthCodeRepository extends Repository {
 	}
 
 	/**
+	 * Searches for an independent auth code with the given auth code in the given context.
+	 *
+	 * @param string $authCode the submitted auth code.
+	 * @param string $context The auth code context.
+	 * @return \Tx\Authcode\Domain\Model\AuthCode|NULL NULL if no data was found, otherwise the matching auth code record.
+	 */
+	public function findOneIndependentByAuthCodeAndContext($authCode, $context) {
+
+		if ($this->autoDeleteExpiredAuthCodes) {
+			$this->deleteExpiredAuthCodesFromDatabase();
+		}
+
+		$query = $this->createQuery();
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
+		$query->matching(
+			$query->logicalAnd(
+				$query->equals('authCode', $authCode),
+				$query->equals('type', AuthCodeType::INDEPENDENT),
+				$query->equals('identifierContext', $context)
+			)
+		);
+
+		return $query->execute()->getFirst();
+	}
+
+	/**
 	 * Generates an auth code for accessing a form that is independent from
 	 * any table records but only needs an identifier and a context name for that
 	 * identifier.
