@@ -2,7 +2,6 @@
 	"name": "intera-typo3-extension/authcode",
 	"description": "Library for generating and validating one time authorization codes (e.g. for email validation).",
 	"type": "typo3-cms-extension",
-	"version": "0.1.2",
 	"replace": {
 		"authcode": "self.version"
 	},
