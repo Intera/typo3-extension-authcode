@@ -14,14 +14,14 @@ $EM_CONF[$_EXTKEY] = array(
 	'title' => 'Auth code libraries',
 	'description' => 'Library for generating and validating one time authorization codes (e.g. for email validation).',
 	'category' => 'misc',
-	'version' => '0.1.0',
+	'version' => '0.2.1',
 	'state' => 'beta',
 	'author' => 'Alexander Stehlik',
 	'author_email' => 'astehlik@intera.de',
 	'author_company' => 'Intera GmbH',
 	'constraints' => array(
 		'depends' => array(
-			'typo3' => '6.2.2-6.2.99',
+			'typo3' => '6.2.2-7.6.99',
 		),
 		'conflicts' => array(),
 		'suggests' => array(),
