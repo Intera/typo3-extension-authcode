@@ -15,9 +15,7 @@
 		}
 	],
 	"replace": {
-		"authcode": "self.version"
-	},
-	"provide": {
+		"typo3-ter/authcode": "self.version",
 		"authcode": "self.version"
 	},
 	"autoload": {
