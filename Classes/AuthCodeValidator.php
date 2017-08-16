@@ -1,4 +1,5 @@
 <?php
+
 namespace Tx\Authcode;
 
 /*                                                                        *
@@ -99,8 +100,8 @@ class AuthCodeValidator {
 	 * If the auth code is invalid an exception will be thrown or the user will be
 	 * redirected to a configured error page.
 	 *
-	 * @param \Tx\Authcode\Domain\Model\AuthCode|string|NULL $authCode The submitted auth code GET parameter, an auth code instance
-	 * from the repository or NULL. If NULL, the auth code will be read from GET or the session.
+	 * @param \Tx\Authcode\Domain\Model\AuthCode|string|NULL $authCode The submitted auth code GET parameter, an auth
+	 *     code instance from the repository or NULL. If NULL, the auth code will be read from GET or the session.
 	 * @throws Exception\InvalidAuthCodeException
 	 * @return \Tx\Authcode\Domain\Model\AuthCode
 	 */
@@ -129,7 +130,10 @@ class AuthCodeValidator {
 
 					// If action is enable record we unhide / enable the associated record.
 					case AuthCodeAction::RECORD_ENABLE:
-						$this->authCodeRecordRepository->enableAssociatedRecord($authCode, $this->updateTimestampOnActivation);
+						$this->authCodeRecordRepository->enableAssociatedRecord(
+							$authCode,
+							$this->updateTimestampOnActivation
+						);
 						break;
 
 					// If action is delete record we delete the record.

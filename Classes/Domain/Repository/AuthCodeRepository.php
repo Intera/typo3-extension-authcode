@@ -1,4 +1,5 @@
 <?php
+
 namespace Tx\Authcode\Domain\Repository;
 
 /*                                                                        *
@@ -20,7 +21,6 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  * A class providing helper functions for auth codes stored in the database
  */
 class AuthCodeRepository extends Repository {
-
 	/**
 	 * This string is parsed by strtotime and specifies
 	 * the timestamp when the auth codes are expired
@@ -66,7 +66,6 @@ class AuthCodeRepository extends Repository {
 				$authCode->getReferenceTableUid(),
 				$authCode->getReferenceTableUidField()
 			);
-
 		} else {
 
 			$this->clearIndependentAuthCodes(
@@ -115,7 +114,8 @@ class AuthCodeRepository extends Repository {
 	 * are deleted from the database if this is not disabled in the settings.
 	 *
 	 * @param string $authCode the submitted auth code
-	 * @return \Tx\Authcode\Domain\Model\AuthCode|NULL NULL if no data was found, otherwise the matching auth code record.
+	 * @return \Tx\Authcode\Domain\Model\AuthCode|NULL NULL if no data was found, otherwise the matching auth code
+	 *     record.
 	 */
 	public function findOneByAuthCode($authCode) {
 
@@ -128,7 +128,9 @@ class AuthCodeRepository extends Repository {
 			$query->equals('authCode', $authCode)
 		);
 
-		return $query->execute()->getFirst();
+		/** @var \Tx\Authcode\Domain\Model\AuthCode $authCode */
+		$authCode = $query->execute()->getFirst();
+		return $authCode;
 	}
 
 	/**
@@ -136,7 +138,8 @@ class AuthCodeRepository extends Repository {
 	 *
 	 * @param string $authCode the submitted auth code.
 	 * @param string $context The auth code context.
-	 * @return \Tx\Authcode\Domain\Model\AuthCode|NULL NULL if no data was found, otherwise the matching auth code record.
+	 * @return \Tx\Authcode\Domain\Model\AuthCode|NULL NULL if no data was found, otherwise the matching auth code
+	 *     record.
 	 */
 	public function findOneIndependentByAuthCodeAndContext($authCode, $context) {
 
@@ -154,7 +157,9 @@ class AuthCodeRepository extends Repository {
 			)
 		);
 
-		return $query->execute()->getFirst();
+		/** @var \Tx\Authcode\Domain\Model\AuthCode $authCode */
+		$authCode = $query->execute()->getFirst();
+		return $authCode;
 	}
 
 	/**
@@ -169,7 +174,6 @@ class AuthCodeRepository extends Repository {
 	 * @param string $context
 	 */
 	public function generateIndependentAuthCode($authCode, $identifier, $context) {
-
 		$authCode->setIdentifier($identifier);
 		$authCode->setIdentifierContext($context);
 
@@ -208,13 +212,16 @@ class AuthCodeRepository extends Repository {
 					isset($GLOBALS['TCA'][$authCode->getReferenceTable()]['ctrl']['enablecolumns']['disabled'])
 					&& $GLOBALS['TCA'][$authCode->getReferenceTable()]['ctrl']['enablecolumns']['disabled'] !== ''
 				) {
-					$authCode->setReferenceTableHiddenField($GLOBALS['TCA'][$authCode->getReferenceTable()]['ctrl']['enablecolumns']['disabled']);
+					$authCode->setReferenceTableHiddenField(
+						$GLOBALS['TCA'][$authCode->getReferenceTable()]['ctrl']['enablecolumns']['disabled']
+					);
 				} else {
-					throw new \InvalidArgumentException('Hidden field is not set in auth code record and can not be found in TCA.');
+					throw new \InvalidArgumentException(
+						'Hidden field is not set in auth code record and can not be found in TCA.'
+					);
 				}
 			}
 		}
-
 
 		$this->initializeAuthCode($authCode, AuthCodeType::RECORD);
 
@@ -234,7 +241,6 @@ class AuthCodeRepository extends Repository {
 	 * @return \Tx\Authcode\Domain\Model\AuthCode
 	 */
 	public function getSubmittedAuthCode($variableName = 'authCode', $formValuesPrefix = '') {
-
 		$authCode = '';
 
 		$formValuesPrefix = trim($formValuesPrefix);
@@ -344,6 +350,7 @@ class AuthCodeRepository extends Repository {
 	protected function findByReferencedRecord($table, $uid, $uidField) {
 		$query = $this->createQuery();
 		$query->getQuerySettings()->setIgnoreEnableFields(TRUE);
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$query->matching(
 			$query->logicalAnd(
 				$query->equals('type', AuthCodeType::RECORD),
@@ -365,6 +372,7 @@ class AuthCodeRepository extends Repository {
 	protected function findIndependendByIdentifierAndContext($identifier, $context) {
 		$query = $this->createQuery();
 		$query->getQuerySettings()->setIgnoreEnableFields(TRUE);
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$query->matching(
 			$query->logicalAnd(
 				$query->equals('type', AuthCodeType::INDEPENDENT),
