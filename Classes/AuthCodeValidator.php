@@ -14,29 +14,28 @@ namespace Tx\Authcode;
 
 use Tx\Authcode\Domain\Enumeration\AuthCodeAction;
 use Tx\Authcode\Domain\Enumeration\AuthCodeType;
+use Tx\Authcode\Domain\Repository\AuthCodeRecordRepository;
+use Tx\Authcode\Domain\Repository\AuthCodeRepository;
+use Tx\Authcode\Domain\Repository\AuthCodeSessionRepository;
 
 /**
  * Provides methods for validating or invalidating auth codes.
  */
 class AuthCodeValidator {
-
 	protected $authCodeIsOptional = FALSE;
 
 	/**
-	 * @var \Tx\Authcode\Domain\Repository\AuthCodeRecordRepository
-	 * @inject
+	 * @var AuthCodeRecordRepository
 	 */
 	protected $authCodeRecordRepository;
 
 	/**
-	 * @var \Tx\Authcode\Domain\Repository\AuthCodeRepository
-	 * @inject
+	 * @var AuthCodeRepository
 	 */
 	protected $authCodeRepository;
 
 	/**
-	 * @var \Tx\Authcode\Domain\Repository\AuthCodeSessionRepository
-	 * @inject
+	 * @var AuthCodeSessionRepository
 	 */
 	protected $authCodeSessionRepository;
 
@@ -54,6 +53,18 @@ class AuthCodeValidator {
 	 * @var bool
 	 */
 	protected $updateTimestampOnActivation = TRUE;
+
+	public function injectAuthCodeRecordRepository(AuthCodeRecordRepository $authCodeRecordRepository) {
+		$this->authCodeRecordRepository = $authCodeRecordRepository;
+	}
+
+	public function injectAuthCodeRepository(AuthCodeRepository $authCodeRepository) {
+		$this->authCodeRepository = $authCodeRepository;
+	}
+
+	public function injectAuthCodeSessionRepository(AuthCodeSessionRepository $authCodeSessionRepository) {
+		$this->authCodeSessionRepository = $authCodeSessionRepository;
+	}
 
 	/**
 	 * Invalidates the submitted auth code

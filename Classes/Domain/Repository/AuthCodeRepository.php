@@ -31,7 +31,6 @@ class AuthCodeRepository extends Repository {
 
 	/**
 	 * @var \Tx\Authcode\Domain\Repository\AuthCodeSessionRepository
-	 * @inject
 	 */
 	protected $authCodeSessionRepository;
 
@@ -50,6 +49,10 @@ class AuthCodeRepository extends Repository {
 	 * @var bool
 	 */
 	protected $autoDeleteExpiredAuthCodes = TRUE;
+
+	public function injectAuthCodeSessionRepository(AuthCodeSessionRepository $authCodeSessionRepository) {
+		$this->authCodeSessionRepository = $authCodeSessionRepository;
+	}
 
 	/**
 	 * Removes all auth codes that reference the same record as the given auth code.
