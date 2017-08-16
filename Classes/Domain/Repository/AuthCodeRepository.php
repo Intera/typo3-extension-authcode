@@ -197,6 +197,9 @@ class AuthCodeRepository extends Repository {
 	 * @throws \InvalidArgumentException
 	 */
 	public function generateRecordAuthCode($authCode, $action, $table, $uid) {
+		$authCode->setReferenceTable($table);
+		$authCode->setReferenceTableUid($uid);
+		$authCode->setAction($action);
 
 		if ($action === AuthCodeAction::RECORD_ENABLE) {
 			$hiddenField = (string)$authCode->getReferenceTableHiddenField();
@@ -212,9 +215,6 @@ class AuthCodeRepository extends Repository {
 			}
 		}
 
-		$authCode->setReferenceTable($table);
-		$authCode->setReferenceTableUid($uid);
-		$authCode->setAction($action);
 
 		$this->initializeAuthCode($authCode, AuthCodeType::RECORD);
 
