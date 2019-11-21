@@ -397,7 +397,7 @@ class AuthCodeRepository extends Repository {
 	 */
 	protected function initializeAuthCode($authCode, $type) {
 
-	    $authCodeString = GeneralUtility::makeInstance(Random::class)->generateRandomHexString(16);
+		$authCodeString = GeneralUtility::makeInstance(Random::class)->generateRandomHexString(16);
 		$authCodeString = md5(serialize($authCode) . $authCodeString);
 		$authCode->setAuthCode($authCodeString);
 
