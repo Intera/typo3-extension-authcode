@@ -14,6 +14,7 @@ namespace Tx\Authcode\Domain\Repository;
 
 use Tx\Authcode\Domain\Enumeration\AuthCodeAction;
 use Tx\Authcode\Domain\Enumeration\AuthCodeType;
+use TYPO3\CMS\Core\Crypto\Random;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 
@@ -396,7 +397,7 @@ class AuthCodeRepository extends Repository {
 	 */
 	protected function initializeAuthCode($authCode, $type) {
 
-		$authCodeString = GeneralUtility::getRandomHexString(16);
+	    $authCodeString = GeneralUtility::makeInstance(Random::class)->generateRandomHexString(16);
 		$authCodeString = md5(serialize($authCode) . $authCodeString);
 		$authCode->setAuthCode($authCodeString);
 
