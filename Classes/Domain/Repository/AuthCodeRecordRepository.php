@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Tx\Authcode\Domain\Repository;
 
 /*                                                                        *
@@ -11,107 +13,126 @@ namespace Tx\Authcode\Domain\Repository;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
+use Doctrine\DBAL\FetchMode;
+use Exception;
+use PDO;
+use Tx\Authcode\Domain\Model\AuthCode;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\SingletonInterface;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * A class providing helper functions for database records associated to auth codes.
  */
-class AuthCodeRecordRepository implements SingletonInterface {
+class AuthCodeRecordRepository implements SingletonInterface
+{
+    /**
+     * Enables the record, that is referenced by the submitted auth code
+     *
+     * @param AuthCode $authCode
+     * @param bool $updateTimestamp
+     * @throws Exception
+     */
+    public function enableAssociatedRecord(AuthCode $authCode, bool $updateTimestamp)
+    {
+        $updateTable = $authCode->getReferenceTable();
+        $queryBuilder = $this->getQueryBuilder($updateTable);
+        $queryBuilder->update($updateTable);
 
-	/**
-	 * @var \TYPO3\CMS\Core\Database\DatabaseConnection
-	 */
-	protected $typo3Db;
+        $uidField = $authCode->getReferenceTableUidField();
+        $uid = $authCode->getReferenceTableUid();
+        $this->addUidContstraint($queryBuilder, $uidField, $uid);
 
-	/**
-	 * Initializes required properties.
-	 */
-	public function __construct() {
-		$this->typo3Db = $GLOBALS['TYPO3_DB'];
-	}
+        $hiddenField = $authCode->getReferenceTableHiddenField();
+        $queryBuilder->set($hiddenField, $authCode->getReferenceTableHiddenFieldMustBeTrue() ? 1 : 0);
 
-	/**
-	 * Enables the record, that is referenced by the submitted auth code
-	 *
-	 * @param \Tx\Authcode\Domain\Model\AuthCode $authCode
-	 * @param bool $updateTimestamp
-	 * @throws \Exception
-	 */
-	public function enableAssociatedRecord($authCode, $updateTimestamp) {
+        if (
+            $updateTimestamp
+            && isset($GLOBALS['TCA'][$updateTable]['ctrl']['tstamp'])
+            && !empty($GLOBALS['TCA'][$updateTable]['ctrl']['tstamp'])
+        ) {
+            $tstampField = $GLOBALS['TCA'][$updateTable]['ctrl']['tstamp'];
+            $queryBuilder->set($tstampField, $GLOBALS['EXEC_TIME']);
+        }
 
-		$updateTable = $authCode->getReferenceTable();
-		$uidField = $authCode->getReferenceTableUidField();
-		$uid = $authCode->getReferenceTableUid();
-		$hiddenField = $authCode->getReferenceTableHiddenField();
+        $queryBuilder->execute();
+    }
 
-		$updateArray = array(
-			$hiddenField => $authCode->getReferenceTableHiddenFieldMustBeTrue() ? 1 : 0
-		);
+    /**
+     * Reads the data of the record that is referenced by the auth code
+     * from the database
+     *
+     * @param AuthCode $authCode
+     * @return NULL|array NULL if no data was found, otherwise an associative array of the record data
+     */
+    public function getAuthCodeRecordFromDB(AuthCode $authCode): ?array
+    {
+        $authCodeRecord = null;
 
-		if (
-			$updateTimestamp
-			&& isset($GLOBALS['TCA'][$updateTable]['ctrl']['tstamp'])
-			&& !empty($GLOBALS['TCA'][$updateTable]['ctrl']['tstamp'])
-		) {
-			$tstampField = $GLOBALS['TCA'][$updateTable]['ctrl']['tstamp'];
-			$updateArray[$tstampField] = $GLOBALS['EXEC_TIME'];
-		}
+        $table = $authCode->getReferenceTable();
+        $queryBuilder = $this->getQueryBuilder($table);
+        $queryBuilder->select($table);
 
-		$enableQuery = $this->typo3Db->UPDATEquery($updateTable, $uidField . '=' . $uid, $updateArray);
+        $uidField = $authCode->getReferenceTableUidField();
+        $uid = $authCode->getReferenceTableUid();
+        $this->addUidContstraint($queryBuilder, $uidField, $uid);
 
-		$enableResult = $this->typo3Db->sql_query($enableQuery);
-		if (!$enableResult) {
-			throw new \Exception('SQL error when enabling the record from the authCode: ' . $this->typo3Db->sql_error());
-		}
-	}
+        $result = $queryBuilder->execute();
+        $authCodeRecord = $result->fetch(FetchMode::ASSOCIATIVE);
 
-	/**
-	 * Reads the data of the record that is referenced by the auth code
-	 * from the database
-	 *
-	 * @param \Tx\Authcode\Domain\Model\AuthCode $authCode
-	 * @return NULL|array NULL if no data was found, otherwise an associative array of the record data
-	 */
-	public function getAuthCodeRecordFromDB($authCode) {
+        return $authCodeRecord ?: null;
+    }
 
-		$authCodeRecord = NULL;
+    /**
+     * Deletes the records that is referenced by the auth code from the database.
+     *
+     * @param AuthCode $authCode
+     * @param bool $forceDeletion If this is TRUE the record will be deleted from the database even if the has a
+     *     "delete" field configured in the TCA.
+     */
+    public function removeAssociatedRecord(AuthCode $authCode, bool $forceDeletion = false): void
+    {
+        $table = $authCode->getReferenceTable();
+        $queryBuilder = $this->getQueryBuilder($table);
 
-		$table = $authCode->getReferenceTable();
-		$uidField = $authCode->getReferenceTableUidField();
-		$uid = (int)$authCode->getReferenceTableUid();
+        $uidField = $authCode->getReferenceTableUidField();
+        $uid = $authCode->getReferenceTableUid();
 
-		$res = $this->typo3Db->exec_SELECTquery('*', $table, $uidField . '=' . $uid);
-		if ($res && $this->typo3Db->sql_num_rows($res)) {
-			$authCodeRecord = $this->typo3Db->sql_fetch_assoc($res);
-		}
+        if (
+            !$forceDeletion
+            && isset($GLOBALS['TCA'][$table]['ctrl']['delete'])
+            && trim($GLOBALS['TCA'][$table]['ctrl']['delete']) !== ''
+        ) {
+            $deleteColumn = $GLOBALS['TCA'][$table]['ctrl']['delete'];
+            $queryBuilder->update($table);
+            $this->addUidContstraint($queryBuilder, $uidField, $uid);
+            $queryBuilder->set($deleteColumn, 1);
+            $queryBuilder->execute();
+            return;
+        }
 
-		$this->typo3Db->sql_free_result($res);
+        $queryBuilder->delete($table);
+        $this->addUidContstraint($queryBuilder, $uidField, $uid);
+    }
 
-		return $authCodeRecord;
-	}
+    protected function getQueryBuilder(string $table): QueryBuilder
+    {
+        return $this->getConnectionPool()->getQueryBuilderForTable($table);
+    }
 
-	/**
-	 * Deletes the records that is referenced by the auth code from the database.
-	 *
-	 * @param \Tx\Authcode\Domain\Model\AuthCode $authCode
-	 * @param bool $forceDeletion If this is TRUE the record will be deleted from the database even if the has a "delete" field configured in the TCA.
-	 */
-	public function removeAssociatedRecord($authCode, $forceDeletion = FALSE) {
+    private function addUidContstraint(QueryBuilder $queryBuilder, string $uidField, int $uid): void
+    {
+        $queryBuilder->where(
+            $queryBuilder->expr()->eq(
+                $uidField,
+                $queryBuilder->createNamedParameter($uid, PDO::PARAM_INT)
+            )
+        );
+    }
 
-		$table = $authCode->getReferenceTable();
-		$uidField = $authCode->getReferenceTableUidField();
-		$uid = $authCode->getReferenceTableUid();
-
-		if (
-			!$forceDeletion
-			&& isset($GLOBALS['TCA'][$table]['ctrl']['delete'])
-			&& trim($GLOBALS['TCA'][$table]['ctrl']['delete']) !== ''
-		) {
-			$deleteColumn = $GLOBALS['TCA'][$table]['ctrl']['delete'];
-			$fieldValues[$deleteColumn] = 1;
-			$this->typo3Db->exec_UPDATEquery($table, $uidField . '=' . (int)$uid, $fieldValues);
-		} else {
-			$this->typo3Db->exec_DELETEquery($table, $uidField . '=' . (int)$uid);
-		}
-	}
+    private function getConnectionPool(): ConnectionPool
+    {
+        return GeneralUtility::makeInstance(ConnectionPool::class);
+    }
 }
