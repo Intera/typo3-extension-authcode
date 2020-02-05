@@ -155,7 +155,7 @@ class AuthCode extends AbstractEntity implements ArrayAccess
 
     public function getReferenceTableHiddenField(): string
     {
-        return $this->referenceTableHiddenField;
+        return (string)$this->referenceTableHiddenField;
     }
 
     public function getReferenceTableHiddenFieldMustBeTrue(): bool

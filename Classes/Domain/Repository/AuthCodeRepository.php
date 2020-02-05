@@ -210,7 +210,7 @@ class AuthCodeRepository extends Repository {
 		$authCode->setAction($action);
 
 		if ($action === AuthCodeAction::RECORD_ENABLE) {
-			$hiddenField = (string)$authCode->getReferenceTableHiddenField();
+			$hiddenField = $authCode->getReferenceTableHiddenField();
 			if ($hiddenField === '') {
 				if (
 					isset($GLOBALS['TCA'][$authCode->getReferenceTable()]['ctrl']['enablecolumns']['disabled'])
