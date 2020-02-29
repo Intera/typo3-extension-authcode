@@ -2,7 +2,7 @@
 	"name": "intera-typo3-extension/authcode",
 	"description": "Library for generating and validating one time authorization codes (e.g. for email validation).",
 	"type": "typo3-cms-extension",
-	"license": "GPL-3.0+",
+	"license": "GPL-3.0-or-later",
 	"authors": [
 		{
 			"name": "Alexander Stehlik",
