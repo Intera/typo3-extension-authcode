@@ -21,16 +21,23 @@
 	},
 	"autoload-dev": {
 		"psr-4": {
-			"Tx\\Authcode\\Tests\\Feature\\": "Tests/Feature/"
+			"TYPO3\\JsonResponse\\": ".Build/vendor/typo3/testing-framework/Resources/Core/Functional/Extensions/json_response/Classes",
+			"TYPO3\\CMS\\Core\\Tests\\": ".Build/Web/typo3/sysext/core/Tests/",
+			"Tx\\Authcode\\Tests\\Functional\\": "Tests/Functional/"
 		}
 	},
 	"require": {
-		"php": ">=5.6",
-		"typo3/cms-core": ">=6.2 <9.0",
-		"typo3/cms-extbase": ">=6.2 <9.0"
+		"php": ">=7.2",
+		"typo3/cms-core": "^9.5",
+		"typo3/cms-extbase": "^9.5"
 	},
 	"require-dev": {
-		"nimut/testing-framework": "^2.0"
+		"typo3/cms-core": "*",
+		"typo3/cms-install": "*",
+		"typo3/cms-about": "*",
+		"typo3/cms-filelist": "*",
+		"typo3/cms-extbase": "*",
+		"de-swebhosting/typo3-extension-buildtools": "dev-TYPO3_9"
 	},
 	"replace": {
 		"typo3-ter/authcode": "self.version"
@@ -41,14 +48,14 @@
 	},
 	"scripts": {
 		"post-autoload-dump": [
-			"mkdir -p .Build/Web/typo3conf/ext/",
-			"[ -L .Build/Web/typo3conf/ext/authcode ] || ln -snvf ../../../../. .Build/Web/typo3conf/ext/authcode"
+			"De\\SWebhosting\\Buildtools\\ExtensionTestEnvironment::prepare"
 		]
 	},
 	"extra": {
 		"typo3/cms": {
-			"cms-package-dir": "{$vendor-dir}/typo3/cms",
-			"web-dir": ".Build/Web"
+			"app-dir": ".Build",
+			"web-dir": ".Build/Web",
+			"extension-key": "authcode"
 		}
 	}
 }

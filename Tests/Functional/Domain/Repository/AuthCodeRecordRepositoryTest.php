@@ -1,10 +1,13 @@
 <?php
 
-namespace Tx\Authcode\Tests\Feature\Domain\Repository;
+namespace Tx\Authcode\Tests\Functional\Domain\Repository;
 
+use Doctrine\DBAL\FetchMode;
 use Tx\Authcode\Domain\Model\AuthCode;
 use Tx\Authcode\Domain\Repository\AuthCodeRecordRepository;
-use Tx\Authcode\Tests\Feature\AbstractFunctionalTest;
+use Tx\Authcode\Tests\Functional\AbstractFunctionalTest;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class AuthCodeRecordRepositoryTest extends AbstractFunctionalTest
 {
@@ -113,7 +116,10 @@ class AuthCodeRecordRepositoryTest extends AbstractFunctionalTest
      */
     private function fetchContentData()
     {
-        return $this->getDatabaseConnection()->selectSingleRow('*', 'tt_content', 'uid=1');
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tt_content');
+        $queryBuilder->getRestrictions()->removeAll();
+        $queryBuilder->select('*')->from('tt_content')->where('uid=1');
+        return $queryBuilder->execute()->fetch(FetchMode::ASSOCIATIVE);
     }
 
     private function importContentDataset()

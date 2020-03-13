@@ -1,11 +1,11 @@
 <?php
 
-namespace Tx\Authcode\Tests\Feature\Domain\Repository;
+namespace Tx\Authcode\Tests\Functional\Domain\Repository;
 
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use Tx\Authcode\Domain\Model\AuthCode;
 use Tx\Authcode\Domain\Repository\AuthCodeRepository;
-use Tx\Authcode\Tests\Feature\AbstractFunctionalTest;
+use Tx\Authcode\Tests\Functional\AbstractFunctionalTest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 

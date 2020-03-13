@@ -72,14 +72,12 @@ class AuthCodeRepository extends Repository
     public function clearAssociatedAuthCodes($authCode)
     {
         if ($authCode->getType() === AuthCodeType::RECORD) {
-
             $this->clearRecordAuthCodes(
                 $authCode->getReferenceTable(),
                 $authCode->getReferenceTableUid(),
                 $authCode->getReferenceTableUidField()
             );
         } else {
-
             $this->clearIndependentAuthCodes(
                 $authCode->getIdentifier(),
                 $authCode->getIdentifierContext()
@@ -156,7 +154,6 @@ class AuthCodeRepository extends Repository
      */
     public function findOneIndependentByAuthCodeAndContext($authCode, $context)
     {
-
         if ($this->autoDeleteExpiredAuthCodes) {
             $this->deleteExpiredAuthCodesFromDatabase();
         }
@@ -224,8 +221,7 @@ class AuthCodeRepository extends Repository
         if ($action === AuthCodeAction::RECORD_ENABLE) {
             $hiddenField = $authCode->getReferenceTableHiddenField();
             if ($hiddenField === '') {
-                if (
-                    isset($GLOBALS['TCA'][$authCode->getReferenceTable()]['ctrl']['enablecolumns']['disabled'])
+                if (isset($GLOBALS['TCA'][$authCode->getReferenceTable()]['ctrl']['enablecolumns']['disabled'])
                     && $GLOBALS['TCA'][$authCode->getReferenceTable()]['ctrl']['enablecolumns']['disabled'] !== ''
                 ) {
                     $authCode->setReferenceTableHiddenField(
@@ -409,18 +405,9 @@ class AuthCodeRepository extends Repository
         return $query->execute();
     }
 
-    /**
-     * @return mixed
-     */
-    protected function generateRandomString()
+    protected function generateRandomString(): string
     {
-        $randomClass = 'TYPO3\\CMS\\Core\\Crypto\\Random';
-        if (!class_exists($randomClass)) {
-            return GeneralUtility::getRandomHexString(16);
-        }
-
-        /** @var Random $random */
-        $random = GeneralUtility::makeInstance($randomClass);
+        $random = GeneralUtility::makeInstance(Random::class);
         return $random->generateRandomHexString(16);
     }
 

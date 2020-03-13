@@ -1,10 +1,10 @@
 <?php
 
-namespace Tx\Authcode\Tests\Feature;
+namespace Tx\Authcode\Tests\Functional;
 
-use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 abstract class AbstractFunctionalTest extends FunctionalTestCase
 {

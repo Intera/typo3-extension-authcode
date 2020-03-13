@@ -12,31 +12,47 @@ namespace Tx\Authcode\Domain\Repository;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
+use Exception;
+use PDO;
 use Tx\Authcode\Domain\Model\AuthCode;
-use Tx\Authcode\Domain\Repository\AuthCodeRecord\AuthCodeRecordAdapterInterface;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\SingletonInterface;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * A class providing helper functions for database records associated to auth codes.
  */
 class AuthCodeRecordRepository implements SingletonInterface
 {
-    private $adapter;
-
-    public function __construct(AuthCodeRecordAdapterInterface $adapter)
-    {
-        $this->adapter = $adapter;
-    }
-
     /**
      * Enables the record, that is referenced by the submitted auth code
      *
      * @param AuthCode $authCode
      * @param bool $updateTimestamp
+     * @throws Exception
      */
     public function enableAssociatedRecord(AuthCode $authCode, $updateTimestamp)
     {
-        $this->adapter->enableAssociatedRecord($authCode, $updateTimestamp);
+        $updateTable = $authCode->getReferenceTable();
+        $queryBuilder = $this->getQueryBuilder($updateTable);
+        $queryBuilder->update($updateTable);
+
+        $uidField = $authCode->getReferenceTableUidField();
+        $uid = $authCode->getReferenceTableUid();
+        $this->addUidContstraint($queryBuilder, $uidField, $uid);
+
+        $hiddenField = $authCode->getReferenceTableHiddenField();
+        $queryBuilder->set($hiddenField, $authCode->getReferenceTableHiddenFieldMustBeTrue() ? 1 : 0);
+
+        if ($updateTimestamp
+            && !empty($GLOBALS['TCA'][$updateTable]['ctrl']['tstamp'])
+        ) {
+            $tstampField = $GLOBALS['TCA'][$updateTable]['ctrl']['tstamp'];
+            $queryBuilder->set($tstampField, $GLOBALS['EXEC_TIME']);
+        }
+
+        $queryBuilder->execute();
     }
 
     /**
@@ -48,7 +64,22 @@ class AuthCodeRecordRepository implements SingletonInterface
      */
     public function getAuthCodeRecordFromDB(AuthCode $authCode)
     {
-        return $this->adapter->getAuthCodeRecordFromDB($authCode);
+        $authCodeRecord = null;
+
+        $table = $authCode->getReferenceTable();
+        $queryBuilder = $this->getQueryBuilder($table);
+        $queryBuilder->getRestrictions()->removeAll();
+        $queryBuilder->select('*');
+        $queryBuilder->from($table);
+
+        $uidField = $authCode->getReferenceTableUidField();
+        $uid = $authCode->getReferenceTableUid();
+        $this->addUidContstraint($queryBuilder, $uidField, $uid);
+
+        $result = $queryBuilder->execute();
+        $authCodeRecord = $result->fetch(PDO::FETCH_ASSOC);
+
+        return $authCodeRecord ?: null;
     }
 
     /**
@@ -60,6 +91,46 @@ class AuthCodeRecordRepository implements SingletonInterface
      */
     public function removeAssociatedRecord(AuthCode $authCode, $forceDeletion = false)
     {
-        $this->adapter->removeAssociatedRecord($authCode, $forceDeletion);
+        $table = $authCode->getReferenceTable();
+        $queryBuilder = $this->getQueryBuilder($table);
+
+        $uidField = $authCode->getReferenceTableUidField();
+        $uid = $authCode->getReferenceTableUid();
+
+        if (!$forceDeletion
+            && isset($GLOBALS['TCA'][$table]['ctrl']['delete'])
+            && trim($GLOBALS['TCA'][$table]['ctrl']['delete']) !== ''
+        ) {
+            $deleteColumn = $GLOBALS['TCA'][$table]['ctrl']['delete'];
+            $queryBuilder->update($table);
+            $this->addUidContstraint($queryBuilder, $uidField, $uid);
+            $queryBuilder->set($deleteColumn, 1);
+            $queryBuilder->execute();
+            return;
+        }
+
+        $queryBuilder->delete($table);
+        $this->addUidContstraint($queryBuilder, $uidField, $uid);
+        $queryBuilder->execute();
+    }
+
+    private function addUidContstraint(QueryBuilder $queryBuilder, $uidField, $uid)
+    {
+        $queryBuilder->where(
+            $queryBuilder->expr()->eq(
+                $uidField,
+                $queryBuilder->createNamedParameter($uid, PDO::PARAM_INT)
+            )
+        );
+    }
+
+    private function getConnectionPool()
+    {
+        return GeneralUtility::makeInstance(ConnectionPool::class);
+    }
+
+    private function getQueryBuilder($table)
+    {
+        return $this->getConnectionPool()->getQueryBuilderForTable($table);
     }
 }
