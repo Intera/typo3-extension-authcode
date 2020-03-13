@@ -2,56 +2,45 @@ language: php
 
 env:
   global:
-    - typo3DatabaseHost=127.0.0.1
-    - typo3DatabasePort=3306
-    - typo3DatabaseName=typo3
-    - typo3DatabaseUsername=root
-    - typo3DatabasePassword=
+    - TYPO3_EXTENSION_KEY=html5mediakit
 
 cache:
   directories:
     - $HOME/.composer/cache
     - $HOME/.cache/composer
 
-sudo: false
+sudo: true
 
-services:
-  - mysql
-
-addons:
-  apt:
-    packages:
-      - parallel
-
-before_install:
-  - composer self-update
-  - composer --version
-  - if [ "$GITHUB_COMPOSER_AUTH" ]; then composer config -g github-oauth.github.com $GITHUB_COMPOSER_AUTH; fi
+stages:
+  - test
+  - name: deploy
+    if: tag
 
 before_script:
-  - export TYPO3_PATH_WEB=$PWD/.Build/Web
-  - phpenv config-rm xdebug.ini
+  - if [ "$GITHUB_COMPOSER_AUTH" ]; then composer config -g github-oauth.github.com $GITHUB_COMPOSER_AUTH; fi
+  - composer install
 
 jobs:
   include:
     - stage: test
       name: "Composer validate"
       php: "7.4"
-      script: composer validate
+      script: bash .Build/bin/t3_run_tests.sh -s composerValidate -p $TRAVIS_PHP_VERSION
 
-    - name: "PHP linting 5.6"
-      php: "5.6"
-      script: find . -name \*.php ! -path "./.Build/*" | parallel --gnu php -d display_errors=stderr -l {} > /dev/null
-    - name: "PHP linting 7.4"
+    - name: "PHP code sniffer"
       php: "7.4"
-      script: find . -name \*.php ! -path "./.Build/*" | parallel --gnu php -d display_errors=stderr -l {} > /dev/null
+      script: bash .Build/bin/t3_check_codestyle.sh PSRHtml5mediakit
 
-    - name: Functional tests TYPO3 6.2, PHP 5.6
-      php: "5.6"
-      script: composer require typo3/cms:^6.2 && php .Build/bin/phpunit -c .Build/vendor/nimut/testing-framework/res/Configuration/FunctionalTests.xml Tests/Feature
-    - name: Functional tests TYPO3 7.6, PHP 7.0
-      php: "7.0"
-      script: composer require typo3/cms:^7.6 && php .Build/bin/phpunit -c .Build/vendor/nimut/testing-framework/res/Configuration/FunctionalTests.xml Tests/Feature
-    - name: Functional tests TYPO3 8.7, PHP 7.1
-      php: "7.1"
-      script: composer require typo3/cms:^8.7 && php .Build/bin/phpunit -c .Build/vendor/nimut/testing-framework/res/Configuration/FunctionalTests.xml Tests/Feature
+    - name: "Functional tests on MySQL PHP 7.3"
+      php: "7.3"
+      script: bash .Build/bin/t3_run_tests.sh -s functional -p $TRAVIS_PHP_VERSION
+    - name: "Functional tests on MySQL PHP 7.4"
+      php: "7.4"
+      script: bash .Build/bin/t3_run_tests.sh -s functional -p $TRAVIS_PHP_VERSION
+
+    - name: "PHP linting PHP 7.3"
+      php: "7.3"
+      script: bash .Build/bin/t3_run_tests.sh -s lint -p $TRAVIS_PHP_VERSION
+    - name: "PHP linting PHP 7.4"
+      php: "7.4"
+      script: bash .Build/bin/t3_run_tests.sh -s lint -p $TRAVIS_PHP_VERSION
