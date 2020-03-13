@@ -30,7 +30,6 @@ class TYPO3DatabaseAdapter implements AuthCodeRecordAdapterInterface
      */
     public function enableAssociatedRecord(AuthCode $authCode, $updateTimestamp)
     {
-
         $updateTable = $authCode->getReferenceTable();
         $uidField = $authCode->getReferenceTableUidField();
         $uid = $authCode->getReferenceTableUid();
@@ -40,8 +39,7 @@ class TYPO3DatabaseAdapter implements AuthCodeRecordAdapterInterface
             $hiddenField => $authCode->getReferenceTableHiddenFieldMustBeTrue() ? 1 : 0,
         ];
 
-        if (
-            $updateTimestamp
+        if ($updateTimestamp
             && isset($GLOBALS['TCA'][$updateTable]['ctrl']['tstamp'])
             && !empty($GLOBALS['TCA'][$updateTable]['ctrl']['tstamp'])
         ) {
@@ -68,7 +66,6 @@ class TYPO3DatabaseAdapter implements AuthCodeRecordAdapterInterface
      */
     public function getAuthCodeRecordFromDB(AuthCode $authCode)
     {
-
         $authCodeRecord = null;
 
         $table = $authCode->getReferenceTable();
@@ -94,13 +91,11 @@ class TYPO3DatabaseAdapter implements AuthCodeRecordAdapterInterface
      */
     public function removeAssociatedRecord(AuthCode $authCode, $forceDeletion = false)
     {
-
         $table = $authCode->getReferenceTable();
         $uidField = $authCode->getReferenceTableUidField();
         $uid = $authCode->getReferenceTableUid();
 
-        if (
-            !$forceDeletion
+        if (!$forceDeletion
             && isset($GLOBALS['TCA'][$table]['ctrl']['delete'])
             && trim($GLOBALS['TCA'][$table]['ctrl']['delete']) !== ''
         ) {

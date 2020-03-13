@@ -129,7 +129,6 @@ class AuthCodeValidator
      */
     public function validateAuthCodeAndExecuteAction($authCode = null)
     {
-
         if (!isset($authCode)) {
             $authCode = $this->authCodeRepository->getSubmittedAuthCode();
         } elseif (is_string($authCode)) {
@@ -141,16 +140,13 @@ class AuthCodeValidator
         }
 
         switch ($authCode->getType()) {
-
             // For independent records we do not need to load the auth code record data.
             case AuthCodeType::INDEPENDENT:
                 break;
 
             // For record auth codes we check the action that should be executed for the record.
             case AuthCodeType::RECORD:
-
                 switch ($authCode->getAction()) {
-
                     // If action is enable record we unhide / enable the associated record.
                     case AuthCodeAction::RECORD_ENABLE:
                         $this->authCodeRecordRepository->enableAssociatedRecord(

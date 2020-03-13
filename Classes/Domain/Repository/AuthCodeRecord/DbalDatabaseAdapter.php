@@ -31,8 +31,7 @@ class DbalDatabaseAdapter implements AuthCodeRecordAdapterInterface
         $hiddenField = $authCode->getReferenceTableHiddenField();
         $queryBuilder->set($hiddenField, $authCode->getReferenceTableHiddenFieldMustBeTrue() ? 1 : 0);
 
-        if (
-            $updateTimestamp
+        if ($updateTimestamp
             && !empty($GLOBALS['TCA'][$updateTable]['ctrl']['tstamp'])
         ) {
             $tstampField = $GLOBALS['TCA'][$updateTable]['ctrl']['tstamp'];
@@ -84,8 +83,7 @@ class DbalDatabaseAdapter implements AuthCodeRecordAdapterInterface
         $uidField = $authCode->getReferenceTableUidField();
         $uid = $authCode->getReferenceTableUid();
 
-        if (
-            !$forceDeletion
+        if (!$forceDeletion
             && isset($GLOBALS['TCA'][$table]['ctrl']['delete'])
             && trim($GLOBALS['TCA'][$table]['ctrl']['delete']) !== ''
         ) {
