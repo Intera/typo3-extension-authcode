@@ -1,4 +1,5 @@
 <?php
+
 namespace Tx\Authcode\Domain\Enumeration;
 
 /*                                                                        *
@@ -16,9 +17,9 @@ use TYPO3\CMS\Core\Type\Enumeration;
 /**
  * The type of the auth code.
  */
-class AuthCodeType extends Enumeration {
+class AuthCodeType extends Enumeration
+{
+    const INDEPENDENT = 'independent';
 
-	const INDEPENDENT = 'independent';
-
-	const RECORD = 'record';
+    const RECORD = 'record';
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Tx\Authcode\Domain\Enumeration;
 
 /*                                                                        *
@@ -16,11 +17,11 @@ use TYPO3\CMS\Core\Type\Enumeration;
 /**
  * The action the auth code authorizes.
  */
-class AuthCodeAction extends Enumeration {
+class AuthCodeAction extends Enumeration
+{
+    const ACCESS_PAGE = 'accessPage';
 
-	const ACCESS_PAGE = 'accessPage';
+    const RECORD_DELETE = 'deleteRecord';
 
-	const RECORD_ENABLE = 'enableRecord';
-
-	const RECORD_DELETE = 'deleteRecord';
+    const RECORD_ENABLE = 'enableRecord';
 }
