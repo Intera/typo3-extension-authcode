@@ -1,4 +1,5 @@
 <?php
+
 namespace Tx\Authcode\Exception;
 
 /*                                                                        *
@@ -17,14 +18,15 @@ use Exception as DefaultException;
  * This Exception will be thrown when the submitted auth code is invalid and a
  * valid auth code is required.
  */
-class InvalidAuthCodeException extends DefaultException {
-
-	/**
-	 * Creates the Exception with a predefined message and code.
-	 *
-	 * @param \Exception $previous
-	 */
-	public function __construct(\Exception $previous = NULL) {
-		parent::__construct('An invalid auth code was submitted', 1408026714, $previous);
-	}
+class InvalidAuthCodeException extends DefaultException
+{
+    /**
+     * Creates the Exception with a predefined message and code.
+     *
+     * @param DefaultException $previous
+     */
+    public function __construct(DefaultException $previous = null)
+    {
+        parent::__construct('An invalid auth code was submitted', 1408026714, $previous);
+    }
 }
