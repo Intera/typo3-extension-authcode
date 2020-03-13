@@ -2,7 +2,7 @@ language: php
 
 env:
   global:
-    - TYPO3_EXTENSION_KEY=html5mediakit
+    - TYPO3_EXTENSION_KEY=authcode
 
 cache:
   directories:
