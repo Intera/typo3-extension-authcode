@@ -1,4 +1,5 @@
 <?php
+
 namespace Tx\Authcode\Domain\Repository;
 
 /*                                                                        *
@@ -11,37 +12,41 @@ namespace Tx\Authcode\Domain\Repository;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
+use Tx\Authcode\Domain\Model\AuthCode;
 use TYPO3\CMS\Core\SingletonInterface;
 
 /**
  * A class providing helper functions for auth codes stored in the session.
  */
-class AuthCodeSessionRepository implements SingletonInterface {
+class AuthCodeSessionRepository implements SingletonInterface
+{
+    const SESSION_KEY = 'tx_authcode_authcode';
 
-	const SESSION_KEY = 'tx_authcode_authcode';
+    /**
+     * Removes the auth code from the session
+     */
+    public function clearAuthCodeFromSession()
+    {
+        unset($_SESSION[static::SESSION_KEY]);
+    }
 
-	/**
-	 * Removes the auth code from the session
-	 */
-	public function clearAuthCodeFromSession() {
-		unset($_SESSION[static::SESSION_KEY]);
-	}
+    /**
+     * Tries to read the auth code from the session
+     *
+     * @return string
+     */
+    public function getAuthCodeFromSession()
+    {
+        return $_SESSION[static::SESSION_KEY];
+    }
 
-	/**
-	 * Tries to read the auth code from the session
-	 *
-	 * @return string
-	 */
-	public function getAuthCodeFromSession() {
-		return $_SESSION[static::SESSION_KEY];
-	}
-
-	/**
-	 * Stores the given auth code in the session
-	 *
-	 * @param \Tx\Authcode\Domain\Model\AuthCode $authCode
-	 */
-	public function storeAuthCodeInSession($authCode) {
-		$_SESSION[static::SESSION_KEY] = $authCode->getAuthCode();
-	}
+    /**
+     * Stores the given auth code in the session
+     *
+     * @param AuthCode $authCode
+     */
+    public function storeAuthCodeInSession($authCode)
+    {
+        $_SESSION[static::SESSION_KEY] = $authCode->getAuthCode();
+    }
 }
