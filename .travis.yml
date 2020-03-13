@@ -42,3 +42,8 @@ jobs:
     - name: "PHP linting PHP 7.4"
       php: "7.4"
       script: bash .Build/bin/t3_run_tests.sh -s lint -p $TRAVIS_PHP_VERSION
+
+    - stage: deploy
+      name: "Deploy to TER"
+      php: "7.3"
+      script: bash .Build/bin/t3_deploy_to_ter.sh
