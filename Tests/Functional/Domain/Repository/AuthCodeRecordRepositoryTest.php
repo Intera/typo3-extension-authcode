@@ -1,10 +1,10 @@
 <?php
 
-namespace Tx\Authcode\Tests\Feature\Domain\Repository;
+namespace Tx\Authcode\Tests\Functional\Domain\Repository;
 
 use Tx\Authcode\Domain\Model\AuthCode;
 use Tx\Authcode\Domain\Repository\AuthCodeRecordRepository;
-use Tx\Authcode\Tests\Feature\AbstractFunctionalTest;
+use Tx\Authcode\Tests\Functional\AbstractFunctionalTest;
 
 class AuthCodeRecordRepositoryTest extends AbstractFunctionalTest
 {
