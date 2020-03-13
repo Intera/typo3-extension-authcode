@@ -405,18 +405,9 @@ class AuthCodeRepository extends Repository
         return $query->execute();
     }
 
-    /**
-     * @return mixed
-     */
-    protected function generateRandomString()
+    protected function generateRandomString(): string
     {
-        $randomClass = 'TYPO3\\CMS\\Core\\Crypto\\Random';
-        if (!class_exists($randomClass)) {
-            return GeneralUtility::getRandomHexString(16);
-        }
-
-        /** @var Random $random */
-        $random = GeneralUtility::makeInstance($randomClass);
+        $random = GeneralUtility::makeInstance(Random::class);
         return $random->generateRandomHexString(16);
     }
 
