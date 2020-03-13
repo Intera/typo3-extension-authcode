@@ -19,13 +19,37 @@
 			"Tx\\Authcode\\": "Classes/"
 		}
 	},
+	"autoload-dev": {
+		"psr-4": {
+			"Tx\\Authcode\\Tests\\Feature\\": "Tests/Feature/"
+		}
+	},
 	"require": {
 		"php": ">=5.6 <7.2",
 		"typo3/cms-core": ">=6.2 <9.0",
 		"typo3/cms-extbase": ">=6.2 <9.0",
 		"typo3/cms": "^8.7"
 	},
+	"require-dev": {
+		"nimut/testing-framework": "^2.0"
+	},
 	"replace": {
 		"typo3-ter/authcode": "self.version"
+	},
+	"config": {
+		"vendor-dir": ".Build/vendor",
+		"bin-dir": ".Build/bin"
+	},
+	"scripts": {
+		"post-autoload-dump": [
+			"mkdir -p .Build/Web/typo3conf/ext/",
+			"[ -L .Build/Web/typo3conf/ext/authcode ] || ln -snvf ../../../../. .Build/Web/typo3conf/ext/authcode"
+		]
+	},
+	"extra": {
+		"typo3/cms": {
+			"cms-package-dir": "{$vendor-dir}/typo3/cms",
+			"web-dir": ".Build/Web"
+		}
 	}
 }

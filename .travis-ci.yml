@@ -1,0 +1,47 @@
+language: php
+
+cache:
+  directories:
+    - $HOME/.composer/cache
+    - $HOME/.cache/composer
+
+sudo: false
+
+addons:
+  mariadb: '10.1'
+  apt:
+    packages:
+      - parallel
+
+before_install:
+  - composer self-update
+  - composer --version
+  - if [ "$GITHUB_COMPOSER_AUTH" ]; then composer config -g github-oauth.github.com $GITHUB_COMPOSER_AUTH; fi
+
+before_script:
+  - export TYPO3_PATH_WEB=$PWD/.Build/Web
+  - phpenv config-rm xdebug.ini
+
+jobs:
+  include:
+    - stage: test
+      name: "Composer validate"
+      php: "7.4"
+      script: composer validate
+
+    - name: "PHP linting 5.6"
+      php: "5.6"
+      script: find . -name \*.php ! -path "./.Build/*" | parallel --gnu php -d display_errors=stderr -l {} > /dev/null
+    - name: "PHP linting 7.4"
+      php: "7.4"
+      script: find . -name \*.php ! -path "./.Build/*" | parallel --gnu php -d display_errors=stderr -l {} > /dev/null
+
+    - name: Functional tests TYPO3 6.2, PHP 5.6
+      php: "5.6"
+      script: composer require typo3/cms:^6.2 && php .Build/bin/phpunit -c .Build/vendor/nimut/testing-framework/res/Configuration/FunctionalTests.xml Tests/Feature
+    - name: Functional tests TYPO3 7.6, PHP 7.0
+      php: "7.0"
+      script: composer require typo3/cms:^7.6 && php .Build/bin/phpunit -c .Build/vendor/nimut/testing-framework/res/Configuration/FunctionalTests.xml Tests/Feature
+    - name: Functional tests TYPO3 8.7, PHP 7.1
+      php: "7.1"
+      script: composer require typo3/cms:^8.7 && php .Build/bin/phpunit -c .Build/vendor/nimut/testing-framework/res/Configuration/FunctionalTests.xml Tests/Feature
