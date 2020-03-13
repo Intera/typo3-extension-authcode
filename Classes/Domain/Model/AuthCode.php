@@ -179,7 +179,7 @@ class AuthCode extends AbstractEntity implements ArrayAccess
     }
 
     /**
-     * @param string $offset
+     * @param mixed $offset
      * @return bool
      * @deprecated Using ArrayAccess for auth code records is deprecated since 0.2.0 and will be removed in 0.4.0. Use
      *     the matching getter / setters instead.
@@ -190,7 +190,7 @@ class AuthCode extends AbstractEntity implements ArrayAccess
     }
 
     /**
-     * @param string $offset
+     * @param mixed $offset
      * @return mixed
      * @deprecated Using ArrayAccess for auth code records is deprecated since 0.2.0 and will be removed in 0.4.0. Use
      *     the matching getter / setters instead.
@@ -205,8 +205,8 @@ class AuthCode extends AbstractEntity implements ArrayAccess
     }
 
     /**
-     * @param string $offset
-     * @param string $value
+     * @param mixed $offset
+     * @param mixed $value
      * @return void
      * @deprecated Using ArrayAccess for auth code records is deprecated since 0.2.0 and will be removed in 0.4.0. Use
      *     the matching getter / setters instead.
@@ -221,7 +221,7 @@ class AuthCode extends AbstractEntity implements ArrayAccess
     }
 
     /**
-     * @param string $offset
+     * @param mixed $offset
      * @return void
      * @deprecated Using ArrayAccess for auth code records is deprecated since 0.2.0 and will be removed in 0.4.0. Use
      *     the matching getter / setters instead.
