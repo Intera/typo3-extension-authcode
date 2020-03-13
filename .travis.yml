@@ -15,8 +15,10 @@ cache:
 
 sudo: false
 
+services:
+  - mysql
+
 addons:
-  mariadb: '10.1'
   apt:
     packages:
       - parallel
