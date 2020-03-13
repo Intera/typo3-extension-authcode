@@ -1,8 +1,6 @@
 <?php
 /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
 
-declare(strict_types=1);
-
 namespace Tx\Authcode\Domain\Model;
 
 /*                                                                        *
@@ -111,12 +109,12 @@ class AuthCode extends AbstractEntity implements ArrayAccess
      */
     protected $validUntil;
 
-    public function getAction(): string
+    public function getAction()
     {
         return (string)$this->action;
     }
 
-    public function getAdditionalData(): array
+    public function getAdditionalData()
     {
         $additionalData = trim($this->serializedAuthData);
         if ($additionalData !== '') {
@@ -133,47 +131,47 @@ class AuthCode extends AbstractEntity implements ArrayAccess
         return $additionalData;
     }
 
-    public function getAuthCode(): string
+    public function getAuthCode()
     {
         return $this->authCode;
     }
 
-    public function getIdentifier(): string
+    public function getIdentifier()
     {
         return $this->identifier;
     }
 
-    public function getIdentifierContext(): string
+    public function getIdentifierContext()
     {
         return $this->identifierContext;
     }
 
-    public function getReferenceTable(): string
+    public function getReferenceTable()
     {
         return $this->referenceTable;
     }
 
-    public function getReferenceTableHiddenField(): string
+    public function getReferenceTableHiddenField()
     {
         return (string)$this->referenceTableHiddenField;
     }
 
-    public function getReferenceTableHiddenFieldMustBeTrue(): bool
+    public function getReferenceTableHiddenFieldMustBeTrue()
     {
         return $this->referenceTableHiddenFieldMustBeTrue;
     }
 
-    public function getReferenceTableUid(): int
+    public function getReferenceTableUid()
     {
         return $this->referenceTableUid;
     }
 
-    public function getReferenceTableUidField(): string
+    public function getReferenceTableUidField()
     {
         return $this->referenceTableUidField;
     }
 
-    public function getType(): string
+    public function getType()
     {
         return (string)$this->type;
     }
@@ -235,62 +233,62 @@ class AuthCode extends AbstractEntity implements ArrayAccess
         $this->$setter(null);
     }
 
-    public function setAction(string $action): void
+    public function setAction($action)
     {
         $this->action = new AuthCodeAction($action);
     }
 
-    public function setAdditionalData(array $additionalData): void
+    public function setAdditionalData(array $additionalData)
     {
         $this->serializedAuthData = serialize($additionalData);
     }
 
-    public function setAuthCode(string $authCode): void
+    public function setAuthCode($authCode)
     {
         $this->authCode = $authCode;
     }
 
-    public function setIdentifier(string $identifier): void
+    public function setIdentifier($identifier)
     {
         $this->identifier = $identifier;
     }
 
-    public function setIdentifierContext(string $identifierContext): void
+    public function setIdentifierContext($identifierContext)
     {
         $this->identifierContext = $identifierContext;
     }
 
-    public function setReferenceTable(string $referenceTable): void
+    public function setReferenceTable($referenceTable)
     {
         $this->referenceTable = $referenceTable;
     }
 
-    public function setReferenceTableHiddenField(string $referenceTableHiddenField): void
+    public function setReferenceTableHiddenField($referenceTableHiddenField)
     {
         $this->referenceTableHiddenField = $referenceTableHiddenField;
     }
 
-    public function setReferenceTableHiddenFieldMustBeTrue(bool $referenceTableHiddenFieldMustBeTrue): void
+    public function setReferenceTableHiddenFieldMustBeTrue($referenceTableHiddenFieldMustBeTrue)
     {
         $this->referenceTableHiddenFieldMustBeTrue = $referenceTableHiddenFieldMustBeTrue;
     }
 
-    public function setReferenceTableUid(int $referenceTableUid): void
+    public function setReferenceTableUid($referenceTableUid)
     {
         $this->referenceTableUid = $referenceTableUid;
     }
 
-    public function setReferenceTableUidField(string $referenceTableUidField): void
+    public function setReferenceTableUidField($referenceTableUidField)
     {
         $this->referenceTableUidField = $referenceTableUidField;
     }
 
-    public function setType(string $type): void
+    public function setType($type)
     {
         $this->type = new AuthCodeType($type);
     }
 
-    public function setValidUntil(DateTime $validUntil): void
+    public function setValidUntil(DateTime $validUntil)
     {
         $this->validUntil = $validUntil;
     }
