@@ -31,6 +31,7 @@ return [
             'label' => $languagePrefixColumn . 'action',
             'config' => [
                 'type' => 'select',
+                'renderType' => 'selectSingle',
                 'items' => [
                     [
                         $languagePrefixColumn . 'action.I.' . AuthCodeAction::RECORD_ENABLE,
@@ -101,6 +102,7 @@ return [
             'label' => $languagePrefixColumn . 'type',
             'config' => [
                 'type' => 'select',
+                'renderType' => 'selectSingle',
                 'items' => [
                     [
                         $languagePrefixColumn . 'type.I.' . AuthCodeType::RECORD,
