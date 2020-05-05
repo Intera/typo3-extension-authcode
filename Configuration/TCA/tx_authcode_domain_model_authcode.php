@@ -120,6 +120,7 @@ return [
             'label' => $languagePrefixColumn . 'valid_until',
             'config' => [
                 'type' => 'input',
+                'renderType' => 'inputDateTime',
                 'eval' => 'datetime',
             ],
         ],
